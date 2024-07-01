@@ -20,11 +20,11 @@ Getting Started
 
 To get started with this project, clone the repository and navigate to the desired directory. Each directory contains its own go.mod file, so you can run and test individual components separately.
 
-sh
-
+```bash
 git clone https://github.com/yourusername/golang-project.git
 cd golang-project/additiongame
 go run main.go
+```
 
 Contributing
 
