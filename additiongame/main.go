@@ -20,7 +20,7 @@ func printresults(r int, w int, n int){
 
 func readfile(file *os.File) (string, error) {
 	var filestream []byte
-	buf := make([]byte, 100) // Initialize buffer
+	buf := make([]byte, 100)
 
 	for {
 		n, err := file.Read(buf)
@@ -102,6 +102,8 @@ func handle_game_logic(mapp map[string]string) (right int, wrong int, n int){
 	return right, wrong, n
 }
 
+
+
 func main() {
 
 	file, err := os.Open("problems.csv")
@@ -111,10 +113,6 @@ func main() {
 	}
 	defer file.Close()
 	
-	if err != nil {
-		fmt.Printf("error reading file: %v\n", err)
-		return
-	}
 	mapp := parse_csvfile(file)
 
 	osR :=	bufio.NewReader(os.Stdin)
