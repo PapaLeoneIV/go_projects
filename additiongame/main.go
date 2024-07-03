@@ -39,18 +39,19 @@ func promptuser(key string, n int, value string){
 	fmt.Println("Question n° "+  strconv.Itoa(n) + ":\nSolve this -->", key)
 }
 
-func getuserprompt() (int, error) {
+func getuserprompt(chan ch1) (int, error) {
 
 	var buf string
 
 	/* start:= time.Now() */
-	fmt.Scanln(&buf)
-/* 	t:= time.Now()
- */
-/* 	if t.Sub(start) > 3 * time.Second{
-		fmt.Println("Your answear is taking too long my boi! EXITING THE GAME\n")
-		os.Exit(1)
-	} */
+	go fmt.Scanln(&buf)
+	go for {
+		start := <-ch1
+	if time.Now() - start > 6 * time.Second{
+		fmt.Println("You took to long to answear!")
+		os.Exit()
+		}
+	}
 	out , err :=strconv.Atoi(buf)
 	if err != nil{
 		return 0, errors.New("User input: not a valid input!")
@@ -75,12 +76,16 @@ func parse_csvfile(file *os.File) map[string]string{
 	return mapp
 }
 
-func handle_game_logic(mapp map[string]string) (right int, wrong int, n int){
+func handle_game_logic(mapp map[string]string, chan ch1) (right int, wrong int, n int){
 	n = 0
 
 	for k, val := range mapp {
+
+		ch1 <- time.Now()
 		promptuser(k, n, val)
-		ans, err := getuserprompt()
+
+		ans, err := getuserprompt(ch1)
+		time := <-ch1
 		if err != nil {
 			fmt.Println("Invalid input. Next question!")
 			wrong++
@@ -119,7 +124,8 @@ func main() {
 	fmt.Println("Press ENTER to start the quiz...")
 	osR.ReadString('\n')
 
+	ch1 := make([]chan , 2)
 	
-	right, wrong, n_quest := handle_game_logic(mapp)
+	right, wrong, n_quest := handle_game_logic(mapp, ch1)
 	printresults(right, wrong, n_quest)
 }
